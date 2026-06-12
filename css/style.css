@@ -1,0 +1,1002 @@
+/* ============================================================
+   VARIABLES & RESET
+   ============================================================ */
+:root {
+  --bg: #0a0a0a;
+  --bg2: #121212;
+  --bg3: #1a1a1a;
+  --bg4: #242424;
+  --green: #1DB954;
+  --green2: #1ed760;
+  --pink: #e91e8c;
+  --purple: #9b59b6;
+  --blue: #4a90e2;
+  --txt: #ffffff;
+  --txt2: #b3b3b3;
+  --txt3: #6a6a6a;
+  --border: #282828;
+  --radius: 12px;
+  --radius-sm: 6px;
+  --shadow: 0 8px 32px rgba(0,0,0,.5);
+  --shadow-lg: 0 16px 64px rgba(0,0,0,.7);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+
+body {
+  background: #050505;
+  color: var(--txt);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { cursor: pointer; border: none; background: none; color: inherit; font: inherit; }
+img { max-width: 100%; display: block; }
+svg { flex-shrink: 0; }
+
+.s-green { color: var(--green); }
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  transition: opacity .6s ease, visibility .6s ease;
+}
+.loading-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.loading-heart { font-size: 64px; animation: heartbeat 1.2s ease-in-out infinite; }
+.loading-text { color: var(--txt2); font-size: 14px; letter-spacing: .05em; }
+.loading-bar-wrap { width: 200px; height: 3px; background: var(--bg3); border-radius: 99px; overflow: hidden; }
+.loading-bar-fill { height: 100%; width: 0; background: var(--green); border-radius: 99px; transition: width .3s ease; }
+
+/* ============================================================
+   STORIES WRAPPER & PHONE FRAME
+   ============================================================ */
+#storiesWrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #050505;
+  overflow: hidden;
+}
+
+#storiesPhone {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+@media (min-width: 700px) {
+  #storiesPhone {
+    width: 393px;
+    height: min(852px, 100vh);
+    border-radius: 26px;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.06), 0 40px 120px rgba(0,0,0,.9);
+  }
+}
+
+/* ============================================================
+   STORIES HEADER — Progress bars + Controls
+   ============================================================ */
+#storiesHeader {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: env(safe-area-inset-top, 12px) 12px 0;
+  padding-top: max(12px, env(safe-area-inset-top));
+  background: linear-gradient(to bottom, rgba(0,0,0,.55) 0%, transparent 100%);
+  pointer-events: none;
+}
+#storiesHeader button { pointer-events: all; }
+
+.progress-bars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 10px;
+}
+
+.pb-seg {
+  flex: 1;
+  height: 2.5px;
+  background: rgba(255,255,255,.28);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pb-fill {
+  height: 100%;
+  background: #fff;
+  width: 0%;
+  border-radius: 2px;
+  transition: none;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.spotify-mark { display: flex; align-items: center; }
+
+.header-controls { display: flex; gap: 8px; align-items: center; }
+
+.hdr-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,.85);
+  font-size: 15px;
+  line-height: 1;
+  border-radius: 50%;
+  background: rgba(0,0,0,.25);
+  transition: background .2s, transform .15s;
+}
+.hdr-btn:hover  { background: rgba(0,0,0,.5); }
+.hdr-btn:active { transform: scale(.9); }
+.hdr-heart { font-size: 18px; }
+.hdr-heart.loved { animation: heartbeat .4s ease; }
+
+/* ============================================================
+   STORIES FOOTER
+   ============================================================ */
+#storiesFooter {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  padding: 10px 16px max(16px, env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(to top, rgba(0,0,0,.45) 0%, transparent 100%);
+  pointer-events: none;
+}
+#storiesFooter button { pointer-events: all; }
+
+.story-counter {
+  font-size: 11px;
+  color: rgba(255,255,255,.55);
+  font-weight: 600;
+  letter-spacing: .05em;
+}
+
+.nav-arrow {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  color: rgba(255,255,255,.85);
+  background: rgba(255,255,255,.14);
+  border-radius: 50%;
+  transition: background .2s, transform .15s;
+}
+.nav-arrow:hover    { background: rgba(255,255,255,.24); }
+.nav-arrow:active   { transform: scale(.88); }
+.nav-arrow:disabled { opacity: .2; pointer-events: none; }
+
+/* Toast de amor */
+#loveToast {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px) scale(.85);
+  background: linear-gradient(135deg, rgba(233,30,140,.95), rgba(180,20,100,.95));
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 13px 24px;
+  border-radius: 99px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0;
+  transition: none;
+  box-shadow: 0 6px 28px rgba(233,30,140,.5);
+  letter-spacing: .01em;
+}
+#loveToast.show {
+  animation: toastIn .45s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+#loveToast.hide {
+  animation: toastOut .35s ease-in forwards;
+}
+@keyframes toastIn {
+  0%   { opacity: 0; transform: translateX(-50%) translateY(24px) scale(.8); }
+  60%  { opacity: 1; transform: translateX(-50%) translateY(-4px) scale(1.04); }
+  100% { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1); }
+}
+@keyframes toastOut {
+  0%   { opacity: 1; transform: translateX(-50%) translateY(0)    scale(1); }
+  100% { opacity: 0; transform: translateX(-50%) translateY(16px) scale(.88); }
+}
+
+/* ============================================================
+   INDIVIDUAL STORY
+   ============================================================ */
+.story {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition: none;
+}
+
+.story.story--active {
+  opacity: 1;
+  pointer-events: all;
+  z-index: 10;
+}
+
+.story.story--enter-next { animation: stEnterNext .32s cubic-bezier(.4,0,.2,1) forwards; }
+.story.story--enter-prev { animation: stEnterPrev .32s cubic-bezier(.4,0,.2,1) forwards; }
+.story.story--exit-next  { animation: stExitNext .32s cubic-bezier(.4,0,.2,1) forwards; z-index: 11; }
+.story.story--exit-prev  { animation: stExitPrev .32s cubic-bezier(.4,0,.2,1) forwards; z-index: 11; }
+
+@keyframes stEnterNext { from { transform: translateX(100%); opacity: .8; } to { transform: translateX(0); opacity: 1; } }
+@keyframes stEnterPrev { from { transform: translateX(-100%); opacity: .8; } to { transform: translateX(0); opacity: 1; } }
+@keyframes stExitNext  { from { transform: translateX(0); opacity: 1; } to { transform: translateX(-28%); opacity: 0; } }
+@keyframes stExitPrev  { from { transform: translateX(0); opacity: 1; } to { transform: translateX(28%); opacity: 0; } }
+
+/* Story body — content wrapper */
+.story-body {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 80px 24px 72px;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Shared eyebrow label */
+.s-eyebrow {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,.6);
+  margin-bottom: 16px;
+}
+.s-eyebrow-green { color: var(--green); }
+
+/* ============================================================
+   STORY 01 — Intro
+   ============================================================ */
+.s01-bg { background: #0a0a0a; }
+
+.particles-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+.s01-shape {
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+}
+.s01-shape1 {
+  top: -8%;
+  right: -18%;
+  width: 72%;
+  height: 65%;
+  background: linear-gradient(140deg, #7a000a 0%, #c0185c 50%, #ff3366 100%);
+  clip-path: polygon(22% 0%, 100% 0%, 100% 90%, 48% 100%);
+  opacity: .88;
+}
+.s01-shape2 {
+  bottom: -6%;
+  left: -8%;
+  width: 55%;
+  height: 32%;
+  background: linear-gradient(140deg, #1a0010, #6b0030);
+  clip-path: polygon(0% 25%, 85% 0%, 100% 65%, 15% 100%);
+  opacity: .65;
+}
+
+.s01-body {
+  z-index: 2;
+  justify-content: center;
+}
+
+.s01-title {
+  font-size: clamp(26px, 7vw, 34px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  margin-bottom: 24px;
+}
+
+.s01-heart {
+  font-size: 28px;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   STORY 02 — Nós Dois
+   ============================================================ */
+.s02-bg { background: #0d0d0d; }
+
+.s-title-xl {
+  font-size: clamp(36px, 11vw, 52px);
+  font-weight: 900;
+  letter-spacing: -.02em;
+  margin-bottom: 14px;
+  line-height: 1;
+}
+
+/* 3-photo collage */
+.collage-3 {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 5px;
+  flex: 1;
+  width: 100%;
+  min-height: 280px;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  background: var(--bg3);
+}
+.collage-3 img:first-child { grid-row: 1 / span 2; width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.collage-3 img { width: 100%; height: 100%; object-fit: cover; object-position: center top; }
+.collage-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: var(--txt3);
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 2;
+}
+
+.date-badge {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+.date-label { font-size: 12px; color: var(--green); font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.date-value { font-size: 22px; font-weight: 900; }
+
+/* ============================================================
+   STORY 03 — Música
+   ============================================================ */
+.s03-bg {
+  background: radial-gradient(ellipse at 50% 100%, rgba(29,185,84,.12) 0%, #0a0a0a 65%);
+}
+
+.s03-body {
+  justify-content: center;
+  align-items: center;
+  padding-top: 72px;
+  padding-bottom: 72px;
+  gap: 0;
+}
+
+.s3-art-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+
+.s3-album-art {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 8px;
+  background: #111;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,.7);
+}
+.s3-album-art img { width: 100%; height: 100%; object-fit: cover; }
+.s3-art-fallback {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  color: rgba(255,255,255,.6);
+}
+
+.player-art-glow { display: none; }
+.player-art-glow.active { display: none; }
+
+.s3-info { flex: none; width: 100%; text-align: left; }
+
+.s3-song-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.s3-title { font-size: 20px; font-weight: 900; line-height: 1.1; }
+.s3-sub { font-size: 12px; color: var(--txt3); }
+.s3-artist { font-size: 14px; color: var(--txt2); font-weight: 600; margin-top: 2px; }
+.s3-heart-btn { font-size: 22px; margin-top: 4px; }
+
+.s3-eq-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.now-playing-lbl {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.eq-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.eq-bars span {
+  width: 3px;
+  background: var(--green);
+  border-radius: 2px;
+  height: 4px;
+  animation: eqPulse .8s ease-in-out infinite;
+}
+.eq-bars span:nth-child(2) { animation-delay: .12s; }
+.eq-bars span:nth-child(3) { animation-delay: .24s; }
+.eq-bars span:nth-child(4) { animation-delay: .08s; }
+.eq-bars span:nth-child(5) { animation-delay: .20s; }
+.eq-bars.paused span { animation-play-state: paused; height: 4px; }
+
+/* Progress bar */
+.progress-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.t-current, .t-total { font-size: 11px; color: var(--txt3); flex-shrink: 0; min-width: 28px; }
+.t-total { text-align: right; }
+.progress-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,.2);
+  border-radius: 99px;
+  position: relative;
+  cursor: pointer;
+  transition: height .15s;
+}
+.progress-track:hover { height: 5px; }
+.progress-fill { height: 100%; background: var(--green); border-radius: 99px; width: 0%; }
+.progress-dot {
+  position: absolute;
+  right: -5px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 11px;
+  height: 11px;
+  background: #fff;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.progress-track:hover .progress-dot { opacity: 1; }
+
+/* Player Controls */
+.s3-ctrl-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.ctrl { border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all .2s; color: var(--txt2); }
+.ctrl:hover { color: var(--txt); transform: scale(1.1); }
+.ctrl-sm { width: 32px; height: 32px; }
+.ctrl-md { width: 36px; height: 36px; }
+.ctrl-play { width: 50px; height: 50px; background: #fff; color: #000; border-radius: 50%; }
+.ctrl-play:hover { background: var(--green2); transform: scale(1.06); }
+.ctrl.active { color: var(--green); }
+
+/* Volume */
+.volume-row { display: flex; align-items: center; gap: 8px; }
+.vol-track {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,.2);
+  border-radius: 99px;
+  cursor: pointer;
+  position: relative;
+}
+.vol-fill { height: 100%; background: var(--txt2); border-radius: 99px; transition: background .2s; }
+.vol-track:hover .vol-fill { background: var(--green); }
+
+/* Waveform */
+.wave-wrap { position: relative; }
+.wave-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+.wave-canvas.active { display: block; }
+.wave-bars-css {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: 100%;
+}
+.wave-bars-css span {
+  width: 3px;
+  background: var(--green);
+  border-radius: 2px;
+  opacity: .55;
+  height: 6px;
+  animation: waveBar 1.1s ease-in-out infinite;
+}
+.wave-bars-css.paused span { animation-play-state: paused; }
+.wave-bars-css span:nth-child(2n)  { animation-delay: .07s; height: 12px; }
+.wave-bars-css span:nth-child(3n)  { animation-delay: .20s; height: 5px; }
+.wave-bars-css span:nth-child(4n)  { animation-delay: .33s; height: 18px; }
+.wave-bars-css span:nth-child(5n)  { animation-delay: .47s; height: 9px; }
+.wave-bars-css span:nth-child(7n)  { animation-delay: .14s; height: 22px; }
+.wave-bars-css span:nth-child(11n) { animation-delay: .40s; height: 14px; }
+
+/* ============================================================
+   STORY 04 — Stats
+   ============================================================ */
+.s04-bg { background: linear-gradient(160deg, #0d1020 0%, #0a0a1a 100%); }
+
+.s04-stats { display: flex; flex-direction: column; gap: 0; width: 100%; text-align: left; }
+.s04-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+}
+.s04-row:last-child { border-bottom: none; }
+.s04-icon { font-size: 28px; flex-shrink: 0; width: 36px; text-align: center; }
+.s04-info { flex: 1; }
+.s04-label { font-size: 12px; color: var(--txt3); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+.s04-num {
+  font-size: 44px;
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.s04-num-lg { font-size: 38px; }
+
+/* ============================================================
+   STORY 05 — Temporada
+   ============================================================ */
+.s05-bg { background: linear-gradient(160deg, #051005 0%, #0a1a0a 50%, #081408 100%); }
+.s05-body { align-items: center; text-align: center; justify-content: center; gap: 20px; }
+.s05-title {
+  font-size: clamp(32px, 9vw, 48px);
+  font-weight: 900;
+  line-height: 1.1;
+}
+.s05-flower { animation: float 3s ease-in-out infinite; }
+.s05-caption { font-size: 16px; color: var(--txt2); }
+
+/* ============================================================
+   STORY 06 — Ranking
+   ============================================================ */
+.s06-bg { background: linear-gradient(160deg, #05080f 0%, #0a0f20 100%); }
+
+.s06-list { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; width: 100%; text-align: left; }
+.s06-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.s06-item:last-child { border-bottom: none; }
+.s06-rank {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--green);
+  width: 28px;
+  flex-shrink: 0;
+  text-align: center;
+}
+.s06-name { font-size: 15px; font-weight: 700; }
+.s06-sub { font-size: 12px; color: var(--txt3); margin-top: 2px; }
+
+/* ============================================================
+   STORY 07 — Gêneros
+   ============================================================ */
+.s07-bg { background: #0a0a0a; }
+
+.s07-genres { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+
+.genre-bar {
+  border-radius: 12px;
+  padding: 16px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 16px;
+  width: 100%;
+}
+.gb-left { display: flex; flex-direction: column; gap: 4px; flex: 1; min-width: 0; }
+.gb-name-row { display: flex; align-items: center; gap: 8px; }
+.gb-emoji { font-size: 18px; line-height: 1; flex-shrink: 0; }
+.gb-name { font-size: 15px; font-weight: 800; line-height: 1.2; }
+.gb-artists { font-size: 11px; opacity: .75; font-weight: 400; padding-left: 26px; }
+.gb-pct { font-size: 14px; font-weight: 800; flex-shrink: 0; margin-left: 12px; }
+.gb-pop     { background: linear-gradient(90deg, #5a2d9c, #8b44d4); }
+.gb-rock    { background: linear-gradient(90deg, #9c1a10, #d63c2e); }
+.gb-acoustic{ background: linear-gradient(90deg, #9c4a00, #d46e10); }
+.gb-romantic{ background: linear-gradient(90deg, #9c1060, #e91e8c); }
+.gb-alt     { background: linear-gradient(90deg, #1a3090, #2e6ed6); }
+
+/* ============================================================
+   STORY 08 — Wrapped
+   ============================================================ */
+.s08-bg { background: radial-gradient(ellipse at 50% 50%, #1a0818 0%, #0a0a0a 70%); }
+.s08-body {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  gap: 12px;
+}
+.s08-label { font-size: 24px; font-weight: 900; line-height: 1.2; }
+.s08-heart { font-size: 100px; animation: heartbeat 1.5s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(233,30,140,.4)); }
+.s08-sub-label { font-size: 18px; color: var(--txt2); font-weight: 600; }
+.s08-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #000;
+  font-size: 26px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ============================================================
+   STORY 09 — Risadas
+   ============================================================ */
+.s09-bg { background: #0a0a0a; }
+
+.s09-number {
+  font-size: clamp(60px, 18vw, 88px);
+  font-weight: 900;
+  color: var(--green);
+  line-height: 1;
+  margin: 12px 0;
+  font-variant-numeric: tabular-nums;
+}
+.s09-desc { font-size: 16px; color: var(--txt2); line-height: 1.5; margin-bottom: 20px; }
+.s09-emoji { font-size: 80px; animation: float 3s ease-in-out infinite; }
+
+/* ============================================================
+   STORY 10 — Fotos
+   ============================================================ */
+.s10-bg { background: #0d0d0d; }
+.s10-body { gap: 12px; justify-content: center; align-items: center; }
+
+.collage-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 4px;
+  flex: 1;
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg3);
+  cursor: pointer;
+}
+.collage-4 img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .3s ease;
+}
+.collage-4 img:hover { transform: scale(1.04); }
+
+/* ============================================================
+   STORY 11 — Maior Conquista
+   ============================================================ */
+.s11-bg { background: linear-gradient(160deg, #050f08 0%, #0a1a0f 100%); }
+.s11-body { justify-content: center; align-items: center; gap: 16px; }
+.s11-title { font-size: clamp(36px, 11vw, 52px); font-weight: 900; line-height: 1; }
+.s11-heart-outline { margin: 8px 0; }
+.s11-caption { font-size: 16px; color: var(--txt2); line-height: 1.6; }
+
+/* ============================================================
+   STORY 12 — Timeline
+   ============================================================ */
+.s12-bg { background: linear-gradient(160deg, #050810 0%, #070d1c 100%); }
+.s12-body { gap: 12px; justify-content: flex-start; align-items: stretch; text-align: left; }
+
+.timeline {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+  position: relative;
+}
+.timeline::-webkit-scrollbar { width: 3px; }
+.timeline::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 4px;
+  bottom: 4px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--green), var(--pink), var(--blue));
+  opacity: .35;
+  border-radius: 2px;
+}
+
+.tl-item {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-left: 30px;
+  position: relative;
+  opacity: 0;
+  transform: translateX(-12px);
+}
+.tl-item.visible { opacity: 1; transform: none; transition: opacity .5s ease, transform .5s ease; }
+
+.tl-dot {
+  position: absolute;
+  left: 3px;
+  top: 5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 2px solid var(--green);
+  z-index: 1;
+  flex-shrink: 0;
+}
+.tl-dot.special { background: var(--green); box-shadow: 0 0 8px rgba(29,185,84,.5); }
+.tl-dot.today   { background: var(--pink); border-color: var(--pink); box-shadow: 0 0 10px rgba(233,30,140,.5); animation: heartbeat 1.5s infinite; }
+
+.tl-content {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: 8px;
+  padding: 10px 14px;
+  flex: 1;
+}
+.tl-date { font-size: 10px; color: var(--green); font-weight: 700; letter-spacing: .05em; margin-bottom: 3px; }
+.tl-title { font-size: 13px; font-weight: 700; }
+.tl-desc { font-size: 11px; color: var(--txt3); margin-top: 2px; }
+.tl-emoji { margin-right: 4px; }
+
+/* ============================================================
+   STORY 13 — O Que Nos Define
+   ============================================================ */
+.s13-bg { background: #0a0a0a; }
+.s13-body { justify-content: center; align-items: center; gap: 24px; }
+
+.s13-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.s13-tags span {
+  padding: 8px 16px;
+  border: 1.5px solid rgba(255,255,255,.2);
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,.85);
+  animation: tagFadeIn .5s ease both;
+}
+.s13-tags span:nth-child(1) { animation-delay: .1s; border-color: rgba(29,185,84,.4); }
+.s13-tags span:nth-child(2) { animation-delay: .2s; border-color: rgba(29,185,84,.3); }
+.s13-tags span:nth-child(3) { animation-delay: .3s; }
+.s13-tags span:nth-child(4) { animation-delay: .4s; }
+.s13-tags span:nth-child(5) { animation-delay: .5s; border-color: rgba(233,30,140,.4); }
+.s13-tags span:nth-child(6) { animation-delay: .6s; }
+.s13-tags span:nth-child(7) { animation-delay: .7s; }
+.s13-tags span:nth-child(8) { animation-delay: .8s; border-color: rgba(29,185,84,.3); }
+.s13-heart { font-size: 48px; text-align: center; animation: heartbeat 1.8s ease-in-out infinite; }
+
+/* ============================================================
+   STORY 14 — Para Sempre
+   ============================================================ */
+.s14-bg { background: radial-gradient(ellipse at 30% 80%, #1a0814 0%, #0a0a0a 60%); }
+.s14-body { justify-content: center; align-items: center; gap: 16px; }
+.s14-title { font-size: clamp(32px, 10vw, 48px); font-weight: 900; line-height: 1.1; }
+.s14-subtitle { font-size: 18px; color: var(--txt2); line-height: 1.5; }
+.s14-hearts { font-size: 60px; margin-top: 16px; animation: float 3s ease-in-out infinite; }
+
+/* ============================================================
+   STORY 15 — Mensagem Final
+   ============================================================ */
+.s15-bg { background: #0a0a0a; }
+.s15-body { justify-content: center; align-items: center; gap: 20px; }
+.s15-msg { display: flex; flex-direction: column; gap: 14px; }
+.s15-msg p { font-size: 18px; font-weight: 700; line-height: 1.4; color: var(--txt2); }
+.s15-msg p:last-child { color: var(--txt); }
+.s15-heart { font-size: 48px; text-align: center; animation: heartbeat 1.8s ease-in-out infinite; }
+
+/* ============================================================
+   STORY 16 — Encerramento
+   ============================================================ */
+.s16-bg { background: #080808; }
+.confetti-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+.s16-body { align-items: center; text-align: center; justify-content: center; gap: 20px; z-index: 2; position: relative; }
+.s16-title {
+  font-size: clamp(28px, 9vw, 40px);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+.s16-neon-heart { filter: drop-shadow(0 0 16px rgba(29,185,84,.6)) drop-shadow(0 0 40px rgba(29,185,84,.3)); animation: heartbeat 2s ease-in-out infinite; }
+.s16-subtitle { font-size: 18px; color: var(--txt2); line-height: 1.5; }
+.s16-days {
+  font-size: 13px;
+  color: rgba(255,255,255,.5);
+  background: rgba(29,185,84,.08);
+  border: 1px solid rgba(29,185,84,.2);
+  border-radius: 99px;
+  padding: 8px 18px;
+}
+.s16-days span { color: var(--green); font-weight: 900; font-size: 20px; margin-right: 4px; }
+.s16-share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: #1DB954;
+  color: #000;
+  font-size: 15px;
+  font-weight: 800;
+  border-radius: 99px;
+  letter-spacing: .02em;
+  transition: transform .15s, background .2s;
+  box-shadow: 0 4px 20px rgba(29,185,84,.4);
+}
+.s16-share-btn:hover  { background: #1ed760; }
+.s16-share-btn:active { transform: scale(.95); }
+.s16-share-btn:disabled { opacity: .5; pointer-events: none; }
+.s16-share-btn span { font-size: 20px; line-height: 1; }
+
+.s16-credit {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255,255,255,.35);
+  line-height: 1.6;
+  letter-spacing: .03em;
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all .3s ease;
+}
+.lightbox.open { opacity: 1; visibility: visible; }
+.lb-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.93); cursor: zoom-out; }
+.lb-img { max-width: 90vw; max-height: 90vh; object-fit: contain; border-radius: 8px; position: relative; z-index: 1; }
+.lb-close {
+  position: absolute; top: 16px; right: 20px; z-index: 2;
+  font-size: 36px; color: rgba(255,255,255,.7);
+  transition: color .2s, transform .2s;
+}
+.lb-close:hover { color: #fff; transform: scale(1.2); }
+.lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2;
+  font-size: 44px; color: rgba(255,255,255,.6); padding: 0 12px;
+  transition: color .2s;
+}
+.lb-nav:hover { color: #fff; }
+.lb-nav-l { left: 0; }
+.lb-nav-r { right: 0; }
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.15); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.1); }
+  70% { transform: scale(1); }
+}
+@keyframes eqPulse {
+  0%, 100% { height: 4px; }
+  50% { height: 14px; }
+}
+@keyframes waveBar {
+  0%, 100% { height: 6px; opacity: .4; }
+  50% { height: 28px; opacity: .8; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+@keyframes tagFadeIn {
+  from { opacity: 0; transform: scale(.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes glowPulse {
+  0%, 100% { opacity: .4; }
+  50% { opacity: .9; }
+}
+@keyframes vinylSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 699px) {
+  .s3-album-art { width: 170px; height: 170px; }
+  .s04-num { font-size: 38px; }
+  .s04-num-lg { font-size: 32px; }
+  .s06-name { font-size: 14px; }
+  .s08-heart { font-size: 80px; }
+  .s09-number { font-size: 72px; }
+  .s11-title { font-size: 40px; }
+  .s16-title { font-size: 28px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 1s !important; transition-duration: .01ms !important; }
+}

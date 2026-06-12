@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Nossa Retrospectiva ❤️</title>
+
+  <!-- PWA / Fullscreen -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Retrospectiva">
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>❤️</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Loading Screen -->
+<div id="loading" class="loading-screen">
+  <div class="loading-heart">❤️</div>
+  <p class="loading-text">Preparando sua retrospectiva...</p>
+  <div class="loading-bar-wrap"><div class="loading-bar-fill" id="loadingBar"></div></div>
+</div>
+
+<!-- Stories Wrapper -->
+<div id="storiesWrapper">
+  <div id="storiesPhone">
+
+    <!-- Global Header -->
+    <div id="storiesHeader">
+      <div class="progress-bars" id="progressBars"><!-- JS gera os segmentos --></div>
+      <div class="header-row">
+        <div class="spotify-mark">
+          <svg viewBox="0 0 168 168" width="26" height="26" aria-label="Spotify">
+            <path d="M84 0C37.6 0 0 37.6 0 84s37.6 84 84 84 84-37.6 84-84S130.4 0 84 0zm38.5 121.2c-1.5 2.5-4.7 3.3-7.3 1.8-19.9-12.2-45-15-74.5-8.2-2.8.6-5.6-1.1-6.3-3.9-.6-2.8 1.1-5.6 3.9-6.3 32.3-7.4 60-4.2 82.4 9.5 2.5 1.5 3.3 4.7 1.8 7.1zm10.3-22.8c-1.9 3-5.8 4-8.8 2.1-22.8-14-57.4-18-84.3-9.9-3.4 1-7-.9-8-4.3-1-3.4.9-7 4.3-8 30.8-9.4 69-4.8 95.1 11.3 3 1.9 4 5.8 1.7 8.8zm.9-23.7c-27.3-16.2-72.4-17.7-98.4-9.8-4.1 1.3-8.5-.9-9.8-5.1-1.2-4.1.9-8.5 5.1-9.8 29.9-9.1 79.6-7.3 111 11.3 3.7 2.2 4.9 7 2.7 10.7-2.2 3.7-7 4.9-10.6 2.7z" fill="#1DB954"/>
+          </svg>
+        </div>
+        <div class="header-controls">
+          <button id="pauseBtn" class="hdr-btn" aria-label="Pausar">⏸</button>
+          <button id="heartBtn" class="hdr-btn hdr-heart" aria-label="Curtir">🤍</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== STORIES ===== -->
+
+    <!-- STORY 01 — Intro -->
+    <div class="story s01-bg" id="story-0" data-index="0">
+      <canvas id="particlesCanvas" class="particles-canvas"></canvas>
+      <div class="s01-shape s01-shape1"></div>
+      <div class="s01-shape s01-shape2"></div>
+      <div class="story-body s01-body">
+        <div class="s-eyebrow">RETROSPECTIVA DIA DOS NAMORADOS</div>
+        <h1 class="s01-title">
+          Nossa história<br>em números,<br>memórias e momentos<br><span class="s-green">inesquecíveis.</span>
+        </h1>
+        <div class="s01-heart">❤️</div>
+      </div>
+    </div>
+
+    <!-- STORY 02 — Nós Dois -->
+    <div class="story s02-bg" id="story-1" data-index="1">
+      <div class="story-body">
+        <div class="s-eyebrow s-eyebrow-green">ESTRELANDO</div>
+        <h2 class="s-title-xl">Nós dois.</h2>
+        <div class="collage-3" id="collage-s1">
+          <div class="collage-placeholder">📸</div>
+        </div>
+        <div class="date-badge">
+          <div class="date-label">Início do nosso namoro</div>
+          <div class="date-value">27/09/2025</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 03 — Nossa Música -->
+    <div class="story s03-bg" id="story-2" data-index="2">
+      <div class="story-body s03-body">
+        <div class="s-eyebrow s-eyebrow-green">NOSSA MÚSICA</div>
+        <div class="s3-art-wrap">
+          <div class="s3-album-art" id="s3AlbumArt">
+            <img id="s3ArtImg" src="music/cover.jpg" alt="Album Art" onerror="this.style.display='none';document.getElementById('s3ArtFallback').style.display='flex'">
+            <div class="s3-art-fallback" id="s3ArtFallback">♪</div>
+            <div class="player-art-glow" id="playerArtGlow"></div>
+          </div>
+        </div>
+        <div class="s3-info">
+          <div class="s3-song-row">
+            <div>
+              <h3 class="s3-title">Leave A Light On</h3>
+              <p class="s3-sub">(Talk Away The Dark)</p>
+              <p class="s3-artist">Papa Roach</p>
+            </div>
+            <button class="s3-heart-btn" id="heartToggle">❤️</button>
+          </div>
+          <div class="s3-eq-row">
+            <span class="now-playing-lbl">Tocando agora</span>
+            <div class="eq-bars" id="eqBars"><span></span><span></span><span></span><span></span><span></span></div>
+          </div>
+          <div class="progress-row">
+            <span class="t-current" id="tCurrent">0:00</span>
+            <div class="progress-track" id="progressTrack">
+              <div class="progress-fill" id="progressFill"></div>
+              <div class="progress-dot" id="progressDot"></div>
+            </div>
+            <span class="t-total" id="tTotal">3:52</span>
+          </div>
+          <div class="s3-ctrl-row">
+            <button class="ctrl ctrl-sm" id="btnShuffle" title="Embaralhar">
+              <svg viewBox="0 0 24 24" width="18"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" fill="currentColor"/></svg>
+            </button>
+            <button class="ctrl ctrl-md" id="btnPrev" title="Anterior">
+              <svg viewBox="0 0 24 24" width="22"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" fill="currentColor"/></svg>
+            </button>
+            <button class="ctrl ctrl-play" id="btnPlay" title="Play/Pause">
+              <svg id="iconPlay" viewBox="0 0 24 24" width="28"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+              <svg id="iconPause" viewBox="0 0 24 24" width="28" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" fill="currentColor"/></svg>
+            </button>
+            <button class="ctrl ctrl-md" id="btnNext" title="Próxima">
+              <svg viewBox="0 0 24 24" width="22"><path d="M6 18 14.5 12 6 6v12zm10-12v12h2V6h-2z" fill="currentColor"/></svg>
+            </button>
+            <button class="ctrl ctrl-sm" id="btnRepeat" title="Repetir">
+              <svg viewBox="0 0 24 24" width="18"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" fill="currentColor"/></svg>
+            </button>
+          </div>
+          <div class="volume-row" style="margin-top:8px">
+            <svg viewBox="0 0 24 24" width="14" style="color:var(--txt3)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" fill="currentColor"/></svg>
+            <div class="vol-track" id="volTrack"><div class="vol-fill" id="volFill" style="width:40%"></div></div>
+            <svg viewBox="0 0 24 24" width="14" style="color:var(--txt3)"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/></svg>
+          </div>
+          <div class="wave-wrap" style="height:36px;margin-top:8px">
+            <canvas id="waveCanvas" class="wave-canvas"></canvas>
+            <div class="wave-bars-css" id="waveBarsCSS">
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+              <span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 04 — Nosso Tempo Juntos -->
+    <div class="story s04-bg" id="story-3" data-index="3">
+      <div class="story-body">
+        <div class="s-eyebrow s-eyebrow-green">NOSSO TEMPO JUNTOS</div>
+        <div class="s04-stats">
+          <div class="s04-row">
+            <span class="s04-icon">📅</span>
+            <div class="s04-info">
+              <div class="s04-label">Dias juntos</div>
+              <div class="s04-num" id="cntDays">0</div>
+            </div>
+          </div>
+          <div class="s04-row">
+            <span class="s04-icon">❤️</span>
+            <div class="s04-info">
+              <div class="s04-label">Semanas juntos</div>
+              <div class="s04-num" id="cntWeeks">0</div>
+            </div>
+          </div>
+          <div class="s04-row">
+            <span class="s04-icon">♾️</span>
+            <div class="s04-info">
+              <div class="s04-label">Meses juntos</div>
+              <div class="s04-num" id="cntMonths">0</div>
+            </div>
+          </div>
+          <div class="s04-row">
+            <span class="s04-icon">⏰</span>
+            <div class="s04-info">
+              <div class="s04-label">Horas compartilhadas</div>
+              <div class="s04-num s04-num-lg" id="cntHours">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 05 — Nossa Temporada -->
+    <div class="story s05-bg" id="story-4" data-index="4">
+      <div class="story-body s05-body">
+        <div class="s-eyebrow s-eyebrow-green">NOSSA TEMPORADA</div>
+        <h2 class="s05-title">Primavera<br>do amor <span id="s05Icon">❤️</span></h2>
+        <div class="s05-flower">
+          <svg viewBox="0 0 120 120" width="140" height="140">
+            <g fill="none" stroke="#1DB954" stroke-width="3">
+              <ellipse cx="60" cy="30" rx="14" ry="24" opacity=".9"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(45 60 60)" opacity=".8"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(90 60 60)" opacity=".9"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(135 60 60)" opacity=".8"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(180 60 60)" opacity=".9"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(225 60 60)" opacity=".8"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(270 60 60)" opacity=".9"/>
+              <ellipse cx="60" cy="30" rx="14" ry="24" transform="rotate(315 60 60)" opacity=".8"/>
+              <circle cx="60" cy="60" r="12" fill="#1DB954" stroke="none"/>
+            </g>
+          </svg>
+        </div>
+        <p class="s05-caption" id="s05Caption">Florescendo juntos todos os dias.</p>
+      </div>
+    </div>
+
+    <!-- STORY 06 — Momentos Mais Especiais (Ranking) -->
+    <div class="story s06-bg" id="story-5" data-index="5">
+      <div class="story-body">
+        <div class="s-eyebrow s-eyebrow-green">MOMENTOS MAIS ESPECIAIS</div>
+        <div class="s06-list">
+          <div class="s06-item"><span class="s06-rank">1</span><div><div class="s06-name">Conversas até tarde</div><div class="s06-sub">Nós</div></div></div>
+          <div class="s06-item"><span class="s06-rank">2</span><div><div class="s06-name">Risos bobos</div><div class="s06-sub">Nós</div></div></div>
+          <div class="s06-item"><span class="s06-rank">3</span><div><div class="s06-name">Silêncios que dizem tudo</div><div class="s06-sub">Nós</div></div></div>
+          <div class="s06-item"><span class="s06-rank">4</span><div><div class="s06-name">Planos para o futuro</div><div class="s06-sub">Nós</div></div></div>
+          <div class="s06-item"><span class="s06-rank">5</span><div><div class="s06-name">Simplesmente juntos</div><div class="s06-sub">Nós</div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 07 — Top Gêneros -->
+    <div class="story s07-bg" id="story-6" data-index="6">
+      <div class="story-body">
+        <div class="s-eyebrow s-eyebrow-green">TOP GÊNEROS</div>
+        <p style="font-size:15px;color:var(--txt2);margin-bottom:20px">O que a gente mais ouviu juntos.</p>
+        <div class="s07-genres">
+          <div class="genre-bar gb-rock">
+            <div class="gb-left">
+              <div class="gb-name-row"><span class="gb-emoji">🎸</span><span class="gb-name">Rock / Metal</span></div>
+              <span class="gb-artists">Papa Roach · Guns N' Roses · Måneskin</span>
+            </div>
+            <span class="gb-pct">40%</span>
+          </div>
+          <div class="genre-bar gb-alt">
+            <div class="gb-left">
+              <div class="gb-name-row"><span class="gb-emoji">🌙</span><span class="gb-name">Alternativo</span></div>
+              <span class="gb-artists">Billie Eilish · Måneskin</span>
+            </div>
+            <span class="gb-pct">28%</span>
+          </div>
+          <div class="genre-bar gb-pop">
+            <div class="gb-left">
+              <div class="gb-name-row"><span class="gb-emoji">✨</span><span class="gb-name">Pop</span></div>
+              <span class="gb-artists">Billie Eilish · hits do momento</span>
+            </div>
+            <span class="gb-pct">18%</span>
+          </div>
+          <div class="genre-bar gb-romantic">
+            <div class="gb-left">
+              <div class="gb-name-row"><span class="gb-emoji">🤠</span><span class="gb-name">Sertanejo</span></div>
+              <span class="gb-artists">quando a vibe pede...</span>
+            </div>
+            <span class="gb-pct">14%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 08 — Nosso Wrapped -->
+    <div class="story s08-bg" id="story-7" data-index="7">
+      <div class="story-body s08-body">
+        <div class="s-eyebrow s-eyebrow-green">NOSSO WRAPPED</div>
+        <p class="s08-label">Melhor companhia<br>do ano</p>
+        <div class="s08-heart">❤️</div>
+        <p class="s08-sub-label">Parceira número 1</p>
+        <div class="s08-badge">1</div>
+      </div>
+    </div>
+
+    <!-- STORY 09 — Risadas Compartilhadas -->
+    <div class="story s09-bg" id="story-8" data-index="8">
+      <div class="story-body">
+        <div class="s-eyebrow s-eyebrow-green">RISADAS COMPARTILHADAS</div>
+        <div class="s09-number" id="cntLaughs">0</div>
+        <p class="s09-desc">Momentos que viraram<br>risada e lembrança.</p>
+        <div class="s09-emoji">😊</div>
+      </div>
+    </div>
+
+    <!-- STORY 10 — Momentos Favoritos (foto grid) -->
+    <div class="story s10-bg" id="story-9" data-index="9">
+      <div class="story-body s10-body">
+        <div class="s-eyebrow s-eyebrow-green">MOMENTOS FAVORITOS</div>
+        <div class="collage-4" id="collage-s9">
+          <div class="collage-placeholder">📸</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 11 — Maior Conquista -->
+    <div class="story s11-bg" id="story-10" data-index="10">
+      <div class="story-body s11-body">
+        <div class="s-eyebrow s-eyebrow-green">MAIOR CONQUISTA</div>
+        <h2 class="s11-title">Construir<br>um nós</h2>
+        <div class="s11-heart-outline">
+          <svg viewBox="0 0 100 90" width="120">
+            <path d="M50 85 C50 85 5 55 5 28 C5 12 17 3 30 8 C38 12 44 20 50 26 C56 20 62 12 70 8 C83 3 95 12 95 28 C95 55 50 85 50 85Z"
+              fill="none" stroke="#1DB954" stroke-width="3.5" opacity=".8"/>
+          </svg>
+        </div>
+        <p class="s11-caption">E escolher continuar<br>todos os dias.</p>
+      </div>
+    </div>
+
+    <!-- STORY 12 — Linha do Tempo -->
+    <div class="story s12-bg" id="story-11" data-index="11">
+      <div class="story-body s12-body">
+        <div class="s-eyebrow s-eyebrow-green">LINHA DO TEMPO</div>
+        <div class="timeline" id="timeline"><!-- JS --></div>
+      </div>
+    </div>
+
+    <!-- STORY 13 — O Que Nos Define -->
+    <div class="story s13-bg" id="story-12" data-index="12">
+      <div class="story-body s13-body">
+        <div class="s-eyebrow s-eyebrow-green">O QUE NOS DEFINE</div>
+        <div class="s13-tags">
+          <span>Companheirismo</span><span>Confiança</span>
+          <span>Respeito</span><span>Apoio</span><span>Amor</span>
+          <span>Amizade</span><span>Cumplicidade</span>
+          <span>Lealdade</span>
+        </div>
+        <div class="s13-heart">❤️</div>
+      </div>
+    </div>
+
+    <!-- STORY 14 — Mensagem Especial -->
+    <div class="story s14-bg" id="story-13" data-index="13">
+      <div class="story-body s14-body">
+        <div class="s-eyebrow s-eyebrow-green">PARA SEMPRE</div>
+        <h2 class="s14-title">Não é sobre<br>o tempo.</h2>
+        <p class="s14-subtitle">É sobre a escolha<br>de todo dia.</p>
+        <div class="s14-hearts">
+          <span>💕</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- STORY 15 — Retrospectiva Final -->
+    <div class="story s15-bg" id="story-14" data-index="14">
+      <div class="story-body s15-body">
+        <div class="s-eyebrow s-eyebrow-green">MENSAGEM FINAL</div>
+        <div class="s15-msg">
+          <p>Cada foto guarda uma lembrança.</p>
+          <p>Cada dia cria uma nova história.</p>
+          <p>E entre todas as músicas do mundo, <span class="s-green">você continua sendo minha favorita.</span></p>
+        </div>
+        <div class="s15-heart">❤️</div>
+      </div>
+    </div>
+
+    <!-- STORY 16 — Encerramento -->
+    <div class="story s16-bg" id="story-15" data-index="15">
+      <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+      <div class="story-body s16-body">
+        <h1 class="s16-title">FELIZ DIA<br>DOS NAMORADOS!</h1>
+        <div class="s16-neon-heart">
+          <svg viewBox="0 0 100 90" width="160">
+            <defs>
+              <filter id="neonGlow">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+            </defs>
+            <path d="M50 85 C50 85 5 55 5 28 C5 12 17 3 30 8 C38 12 44 20 50 26 C56 20 62 12 70 8 C83 3 95 12 95 28 C95 55 50 85 50 85Z"
+              fill="none" stroke="#1DB954" stroke-width="3" filter="url(#neonGlow)" opacity=".9"/>
+          </svg>
+        </div>
+        <p class="s16-subtitle">Te amo hoje, amanhã<br>e sempre.</p>
+        <div class="s16-days"><span id="finalDays">...</span> dias de amor</div>
+        <button id="shareBtn" class="s16-share-btn">
+          Compartilhar no Stories
+        </button>
+        <p class="s16-credit">Feito com amor ❤️<br>Gabriel Oliveira</p>
+      </div>
+    </div>
+
+    <!-- Toast de amor -->
+    <div id="loveToast">Eu te amo, hoje, amanhã e sempre ❤️</div>
+
+    <!-- Global Footer -->
+    <div id="storiesFooter">
+      <button class="nav-arrow" id="navPrev" aria-label="Anterior">&#8592;</button>
+      <span class="story-counter" id="storyCounter">1/16</span>
+      <button class="nav-arrow" id="navNext" aria-label="Próxima">&#8594;</button>
+    </div>
+
+  </div><!-- /storiesPhone -->
+</div><!-- /storiesWrapper -->
+
+<!-- Global Lightbox -->
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lb-backdrop" id="lbBackdrop"></div>
+  <button class="lb-close" id="lbClose" aria-label="Fechar">×</button>
+  <button class="lb-nav lb-nav-l" id="lbPrev" aria-label="Anterior">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-nav-r" id="lbNext" aria-label="Próxima">›</button>
+</div>
+
+<!--
+  🎵 MÚSICA: coloque o arquivo MP3 em music/trilha.mp3
+  🖼️ CAPA:   coloque a capa do álbum em music/cover.jpg
+-->
+<audio id="bgMusic" preload="auto" loop>
+  <source src="music/trilha.mp3" type="audio/mpeg">
+</audio>
+
+<script src="js/script.js"></script>
+</body>
+</html>
