@@ -253,6 +253,10 @@ class MusicPlayer {
   toggle() { this.playing ? this.pause() : this.play(); }
 
   async play() {
+    // Retoma AudioContext suspenso (exigido pelo iOS após interrupção)
+    if (this.audioCtx && this.audioCtx.state === 'suspended') {
+      try { await this.audioCtx.resume(); } catch (_) {}
+    }
     try {
       await this.audio.play();
       this.playing = true;
@@ -265,7 +269,7 @@ class MusicPlayer {
   }
 
   pause() {
-    this.audio.pause();
+    try { this.audio.pause(); } catch (_) {}
     clearInterval(this.fakeTimer);
     this.playing = false;
     this.setPlayingUI(false);
@@ -273,6 +277,9 @@ class MusicPlayer {
 
   setupAudioCtx() {
     if (this.audioCtx) return;
+    // Mobile (iOS/Android): createMediaElementSource causa conflitos — usa só CSS bars
+    const isMobile = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) return;
     try {
       this.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       this.analyser = this.audioCtx.createAnalyser();
@@ -863,9 +870,7 @@ async function init() {
   const sp = new StoryPlayer({
     onPauseChange: (isPaused) => {
       if (isPaused) {
-        player.audio.pause();
-        player.playing = false;
-        player.setPlayingUI(false);
+        player.pause();
       } else {
         player.play();
       }
@@ -923,29 +928,19 @@ async function init() {
   await minWait;
   setTimeout(() => loading.classList.add('hidden'), 300);
 
-  // Autoplay: tenta imediatamente; se o browser bloquear, dispara no primeiro toque do usuário
-  const tryAutoplay = async () => {
-    try {
-      await player.audio.play();
-      player.playing = true;
-      player.setupAudioCtx();
-      player.setPlayingUI(true);
-    } catch (_) {
-      // Aguarda primeiro gesto do usuário
-      const onFirstGesture = async () => {
-        document.removeEventListener('click',      onFirstGesture);
-        document.removeEventListener('touchstart', onFirstGesture);
-        document.removeEventListener('keydown',    onFirstGesture);
-        if (!player.playing) await player.play();
-      };
-      document.addEventListener('click',      onFirstGesture, { once: true });
-      document.addEventListener('touchstart', onFirstGesture, { once: true });
-      document.addEventListener('keydown',    onFirstGesture, { once: true });
-    }
+  // Autoplay: tenta no primeiro gesto (único modo confiável no iOS)
+  const onFirstGesture = async () => {
+    if (!player.playing) await player.play();
   };
+  document.addEventListener('touchstart', onFirstGesture, { once: true, passive: true });
+  document.addEventListener('click',      onFirstGesture, { once: true });
 
-  // Dispara após a tela de loading sumir
-  setTimeout(tryAutoplay, 600);
+  // Em browsers de desktop tenta direto
+  setTimeout(async () => {
+    if (!player.playing) {
+      try { await player.play(); } catch (_) {}
+    }
+  }, 700);
 }
 
 /* ============================================================
